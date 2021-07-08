@@ -3,36 +3,35 @@ import chatStore from '../store/chat'
 
 const SecondPerson = () => {
   const [ chatState, setChatState ] = useState(chatStore.initialState);
-  const [ chatMessage, setChatMessage ] = useState("")
+  const [ chatMessage, setChatMessage ] = useState<string | null>("")
 
   useLayoutEffect(()=> {
     chatStore.subscribe(setChatState);
     chatStore.init();
   },[]);
 
-
-  const onFormSubmit = (event) => {
+  const onFormSubmit = (event: React.SyntheticEvent) => {
     event.preventDefault();
     const messageObject = {
+      id: chatState.data.length,
       person: 'second-person',
       text: chatMessage.trim(),
     };
     setChatMessage("")
     chatStore.sendMessage(messageObject);
-    // document.getElementById('messageForm').reset();
   };
 
-  const onMessageInput = (event) =>{
-    setChatMessage(event.target.value)
+  const onMessageInput = (event: React.SyntheticEvent) =>{
+    setChatMessage((event.target as HTMLTextAreaElement).value)
   }
 
   return (
     <div className="container">
       <h2>Cortana</h2>
       <div className="chat-box">
-        {chatState.data.map(message => (
+        {chatState.data.map( message => (
           <div>
-            <p className={message.person}>{message.text}</p>
+            <p className={message.person.custom ? message.person.custom : message.person}>{message.text}</p>
             <div className="clear"></div>
           </div>
         ))}

@@ -2,11 +2,23 @@ import { Subject } from 'rxjs'
 
 const subject = new Subject();
 
-const initialState = {
+type Person = 'first-person' | 'second-person' | { custom: string }
+
+interface ChatMessage {
+  id: number;
+  text: string;
+  person: Person | string;
+}
+
+type InitialState = {
+  data : ChatMessage[] | []
+  newDataCount: number
+}
+
+const initialState: InitialState = {
   data: [],
   newDataCount: 0,
 };
-
 let state = initialState;
 
 const chatStore = {
@@ -15,7 +27,7 @@ const chatStore = {
     subject.next(state)
   },
   subscribe: setState => subject.subscribe(setState),
-  sendMessage: message => {
+  sendMessage: (message: ChatMessage) => {
     state = {
       ...state,
       data: [...state.data, message],
